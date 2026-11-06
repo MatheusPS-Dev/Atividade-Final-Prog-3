@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block titulo %}{% if genero_ativo %}{{ genero_ativo.nome }}{% else %}Livros{% endif %}{% endblock %}
+
+{% block conteudo %}
+<div class="titulo-linha">
+  <div>
+    <h1>{% if genero_ativo %}{{ genero_ativo.nome }}{% else %}Livros{% endif %}</h1>
+    <p class="subtitulo">
+      {{ pagina.paginator.count }} livro{{ pagina.paginator.count|pluralize }}
+      {% if busca %}encontrado{{ pagina.paginator.count|pluralize }} para “{{ busca }}”{% elif genero_ativo %}neste gênero{% else %}no acervo{% endif %}.
+      {% if genero_ativo.descricao %}{{ genero_ativo.descricao }}{% endif %}
+    </p>
+  </div>
+  <div class="titulo-linha__acoes">
+    <a class="botao botao--primario" href="{% url 'livros:novo_livro' %}{% if genero_ativo %}?genero={{ genero_ativo.pk }}{% endif %}">
+      {% include "partials/icone.html" with nome="mais" %}Cadastrar livro
+    </a>
+  </div>
+</div>
+
+<nav class="abas" aria-label="Filtrar por gênero">
+  <a href="{% url 'livros:lista' %}{% if busca %}?q={{ busca|urlencode }}{% endif %}" {% if not genero_ativo %}aria-current="page"{% endif %}>Todos</a>
+  {% for genero in generos %}
+  <a href="?genero={{ genero.slug }}{% if busca %}&amp;q={{ busca|urlencode }}{% endif %}" {% if genero == genero_ativo %}aria-current="page"{% endif %}>{{ genero.nome }}</a>
+  {% endfor %}
+</nav>
+
+<form class="ferramentas" method="get" role="search">
+  {% if genero_ativo %}<input type="hidden" name="genero" value="{{ genero_ativo.slug }}">{% endif %}
+  <label class="busca">
+    <span class="sr-only">Buscar por título ou autor</span>
+    {% include "partials/icone.html" with nome="busca" %}
+    <input type="search" name="q" value="{{ busca }}" placeholder="Título ou autor">
+  </label>
+  <label class="ordenar">
+    <span>Ordenar por</span>
+    <select name="ordem" data-autoenvio>
+      {% for chave, rotulo in ordenacoes %}
+      <option value="{{ chave }}" {% if chave == ordem %}selected{% endif %}>{{ rotulo }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button class="botao botao--secundario-js" type="submit">Aplicar</button>
+</form>
+
+<div class="painel painel--tabela">
+  <table class="tabela tabela--livros">
+    <thead>
+      <tr>
+        <th scope="col">Livro</th>
+        <th scope="col">Gênero</th>
+        <th scope="col" class="num">Ano</th>
+        <th scope="col" class="num">Resenhas</th>
+        <th scope="col" class="num">Média</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for livro in pagina %}
+      <tr>
+        <td>
+          <a class="livro-celula" href="{{ livro.get_absolute_url }}">
+            {% include "partials/capa.html" with livro=livro tamanho="mini" %}
+            <span>
+              <span class="livro-celula__titulo">{{ livro.titulo }}</span>
+              <span class="livro-celula__meta">{{ livro.autor }}<span class="so-celular"> · {{ livro.genero.nome }}</span></span>
+            </span>
+          </a>
+        </td>
+        <td class="col-genero"><span class="chip tom-{{ livro.genero.tom }}">{{ livro.genero.nome }}</span></td>
+        <td class="num col-ano">{{ livro.ano_publicacao|default:"—" }}</td>
+        <td class="num col-resenhas">{{ livro.total_resenhas }}</td>
+        <td class="num col-media">
+          {% if livro.media %}{{ livro.media|floatformat:1 }}<span class="unidade"> /5</span>{% else %}<span class="unidade">—</span>{% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="vazio">
+          Nenhum livro {% if busca %}com “{{ busca }}” no título ou no autor{% else %}neste gênero ainda{% endif %}.
+          <a href="{% url 'livros:lista' %}">Ver todos os livros</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if pagina.paginator.num_pages > 1 %}
+  <nav class="paginacao" aria-label="Páginas">
+    <span class="num">{{ pagina.start_index }}–{{ pagina.end_index }} de {{ pagina.paginator.count }}</span>
+    <span class="paginacao__botoes">
+      {% if pagina.has_previous %}<a class="botao" href="?{% if genero_ativo %}genero={{ genero_ativo.slug }}&amp;{% endif %}{% if busca %}q={{ busca|urlencode }}&amp;{% endif %}ordem={{ ordem }}&amp;pagina={{ pagina.previous_page_number }}">Anterior</a>{% endif %}
+      {% if pagina.has_next %}<a class="botao" href="?{% if genero_ativo %}genero={{ genero_ativo.slug }}&amp;{% endif %}{% if busca %}q={{ busca|urlencode }}&amp;{% endif %}ordem={{ ordem }}&amp;pagina={{ pagina.next_page_number }}">Próxima</a>{% endif %}
+    </span>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

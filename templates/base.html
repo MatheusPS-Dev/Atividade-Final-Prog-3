@@ -1,0 +1,114 @@
+{% load static livros_extras %}<!doctype html>
+<html lang="pt-br" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Início{% endblock %} · Entre Páginas</title>
+  <meta name="description" content="Entre Páginas: o clube de leitura onde a turma resenha livros e dá notas de 1 a 5.">
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+  <link rel="icon" href="{% static 'img/marca.svg' %}" type="image/svg+xml">
+  <script src="{% static 'js/site.js' %}" defer></script>
+</head>
+<body>
+{% with rota=request.resolver_match.url_name %}
+<div class="app">
+
+  {# Barra do celular: aparece só em telas estreitas e abre o menu lateral #}
+  <header class="barra-celular">
+    <a class="marca marca--compacta" href="{% url 'livros:inicio' %}">
+      {% include "partials/marca.html" %}
+      <span class="marca__nome">Entre Páginas</span>
+    </a>
+    <button class="botao botao--menu" type="button" aria-controls="menu-lateral" aria-expanded="false">
+      {% include "partials/icone.html" with nome="menu" %}<span>Menu</span>
+    </button>
+  </header>
+
+  <aside class="lateral" id="menu-lateral" aria-label="Menu principal">
+    <a class="marca" href="{% url 'livros:inicio' %}">
+      {% include "partials/marca.html" %}
+      <span>
+        <span class="marca__nome">Entre Páginas</span>
+        <span class="marca__escopo">Clube de leitura · Ariquemes</span>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="{% url 'livros:inicio' %}" {% if rota == 'inicio' %}aria-current="page"{% endif %}>
+        {% include "partials/icone.html" with nome="casa" %}Início
+      </a>
+      <a href="{% url 'livros:lista' %}" {% if rota == 'lista' and not request.GET.genero %}aria-current="page"{% endif %}>
+        {% include "partials/icone.html" with nome="livro" %}Livros
+      </a>
+      <a href="{% url 'livros:minhas_resenhas' %}" {% if rota == 'minhas_resenhas' %}aria-current="page"{% endif %}>
+        {% include "partials/icone.html" with nome="pena" %}Minhas resenhas
+      </a>
+      <a href="{% url 'livros:novo_livro' %}" {% if rota == 'novo_livro' %}aria-current="page"{% endif %}>
+        {% include "partials/icone.html" with nome="mais" %}Cadastrar livro
+      </a>
+      {% if user.is_staff %}
+      <a href="{% url 'admin:index' %}">
+        {% include "partials/icone.html" with nome="ajustes" %}Administração
+      </a>
+      {% endif %}
+    </nav>
+
+    {% if generos_menu %}
+    <p class="nav__grupo">Gêneros</p>
+    <nav class="nav" aria-label="Gêneros">
+      {% for genero in generos_menu %}
+      <a href="{% url 'livros:lista' %}?genero={{ genero.slug }}" class="tom-{{ genero.tom }}"
+         {% if rota == 'lista' and request.GET.genero == genero.slug %}aria-current="page"{% endif %}>
+        <span class="amostra" aria-hidden="true"></span>{{ genero.nome }}
+      </a>
+      {% endfor %}
+    </nav>
+    {% endif %}
+
+    <div class="lateral__rodape">
+      {% if user.is_authenticated %}
+        <div class="usuario-linha">
+          <span class="avatar" style="--h: {{ user|matiz }}" aria-hidden="true">{{ user|nome_exibicao|first|upper }}</span>
+          <span class="usuario-linha__nome">
+            {{ user|nome_exibicao }}
+            <span class="usuario-linha__login">@{{ user.username }}</span>
+          </span>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="botao-icone" type="submit" aria-label="Sair da conta" title="Sair">
+              {% include "partials/icone.html" with nome="sair" %}
+            </button>
+          </form>
+        </div>
+      {% else %}
+        <div class="lateral__entrar">
+          <a class="botao botao--primario" href="{% url 'cadastro' %}">Criar conta</a>
+          <a class="botao" href="{% url 'login' %}">Entrar</a>
+        </div>
+      {% endif %}
+    </div>
+  </aside>
+
+  <main class="tela" id="conteudo">
+    {% if messages %}
+    <div class="avisos" role="status">
+      {% for message in messages %}
+      <p class="aviso aviso--{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block conteudo %}{% endblock %}
+
+    <footer class="rodape">
+      Entre Páginas · Trabalho Final de Programação III · ADS IFRO Campus Ariquemes · 2026
+    </footer>
+  </main>
+</div>
+{% endwith %}
+</body>
+</html>

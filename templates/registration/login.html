@@ -1,0 +1,28 @@
+{% extends "layouts/formulario.html" %}
+
+{% block titulo %}Entrar{% endblock %}
+{% block titulo_formulario %}Entrar{% endblock %}
+{% block subtitulo %}
+  {% if next %}Essa ação é só para leitores com conta. Entre para continuar.{% else %}Entre com o seu nome de usuário e a sua senha.{% endif %}
+{% endblock %}
+
+{% block explicacao %}
+  <h2>Com a sua conta você pode</h2>
+  <ul class="lista-simples">
+    <li>escrever resenhas e dar notas de 1 a 5;</li>
+    <li>editar ou excluir as suas resenhas;</li>
+    <li>cadastrar livros novos no acervo.</li>
+  </ul>
+  <p>Ainda não tem conta? <a href="{% url 'cadastro' %}">Criar conta</a></p>
+{% endblock %}
+
+{% block campos %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% for campo in form.visible_fields %}
+    {% include "partials/campo.html" %}
+  {% endfor %}
+{% endblock %}
+
+{% block acoes %}
+  <button class="botao botao--primario" type="submit">Entrar</button>
+{% endblock %}

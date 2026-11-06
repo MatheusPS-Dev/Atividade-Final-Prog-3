@@ -1,0 +1,17 @@
+{% extends "layouts/formulario.html" %}
+
+{% block titulo %}Cadastrar livro{% endblock %}
+{% block titulo_formulario %}Cadastrar livro{% endblock %}
+{% block subtitulo %}O livro entra no acervo e fica disponível para todo mundo resenhar.{% endblock %}
+
+{% block explicacao %}
+  <h2>Antes de cadastrar</h2>
+  <p>Procure o livro na <a href="{% url 'livros:lista' %}">lista de livros</a> para não cadastrar o mesmo duas vezes.</p>
+  <p>O gênero define a cor da capa e onde o livro aparece no menu. Gêneros novos são criados na administração.</p>
+  <p>O livro fica registrado no seu nome, {{ user.first_name|default:user.username }}.</p>
+{% endblock %}
+
+{% block acoes %}
+  <button class="botao botao--primario" type="submit">Cadastrar livro</button>
+  <a class="botao" href="{% url 'livros:lista' %}">Cancelar</a>
+{% endblock %}

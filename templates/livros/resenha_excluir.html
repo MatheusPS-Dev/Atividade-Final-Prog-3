@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block titulo %}Excluir resenha{% endblock %}
+
+{% block conteudo %}
+<div class="titulo-linha">
+  <div>
+    <h1>Excluir resenha</h1>
+    <p class="subtitulo">Sobre {{ resenha.livro.titulo }}, de {{ resenha.livro.autor }}.</p>
+  </div>
+</div>
+
+<form class="painel confirmacao" method="post">
+  {% csrf_token %}
+  <p>A resenha <strong>“{{ resenha.titulo }}”</strong> e a sua nota {{ resenha.nota }} de 5 serão apagadas da página do livro. Não dá para desfazer.</p>
+  <div class="formulario__acoes">
+    <button class="botao botao--perigo" type="submit">Excluir resenha</button>
+    <a class="botao" href="{{ resenha.get_absolute_url }}">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

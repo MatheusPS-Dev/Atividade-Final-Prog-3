@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block titulo %}Página não encontrada{% endblock %}
+
+{% block conteudo %}
+<div class="titulo-linha">
+  <div>
+    <h1>Página não encontrada</h1>
+    <p class="subtitulo">O endereço não existe, ou é uma resenha que só a pessoa que escreveu pode editar.</p>
+  </div>
+</div>
+<div class="painel confirmacao">
+  <p>Volte para a <a href="{% url 'livros:inicio' %}">página inicial</a> ou veja a <a href="{% url 'livros:lista' %}">lista de livros</a>.</p>
+</div>
+{% endblock %}

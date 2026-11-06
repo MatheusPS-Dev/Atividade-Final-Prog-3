@@ -1,0 +1,12 @@
+{% comment %}
+Capa desenhada só com CSS, na proporção real de um livro (2:3) e na cor do gênero.
+Uso: {% include "partials/capa.html" with livro=livro tamanho="mini" %}  (tamanhos: mini, media, grande)
+{% endcomment %}
+<span class="capa capa--{{ tamanho|default:'media' }} tom-{{ livro.genero.tom }}" aria-hidden="true">
+  {% if tamanho == "mini" %}
+    <span class="capa__inicial">{{ livro.titulo|first }}</span>
+  {% else %}
+    <span class="capa__titulo">{{ livro.titulo }}</span>
+    <span class="capa__autor">{{ livro.autor }}</span>
+  {% endif %}
+</span>

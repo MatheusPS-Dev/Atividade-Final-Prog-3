@@ -1,0 +1,16 @@
+{% extends "layouts/formulario.html" %}
+
+{% block titulo %}Criar conta{% endblock %}
+{% block titulo_formulario %}Criar conta{% endblock %}
+{% block subtitulo %}Leva menos de um minuto. Depois disso você já entra no site.{% endblock %}
+
+{% block explicacao %}
+  <h2>Quem lê também escreve</h2>
+  <p>Visitantes podem ver os livros e ler as resenhas. Para escrever a sua opinião, dar nota e cadastrar livros, é preciso ter uma conta.</p>
+  <p>Seu nome aparece nas resenhas que você escrever. O e-mail não aparece no site.</p>
+  <p>Já tem conta? <a href="{% url 'login' %}">Entrar</a></p>
+{% endblock %}
+
+{% block acoes %}
+  <button class="botao botao--primario" type="submit">Criar conta</button>
+{% endblock %}

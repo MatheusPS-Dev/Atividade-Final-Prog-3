@@ -1,0 +1,35 @@
+{% extends "layouts/formulario.html" %}
+
+{% block titulo %}{% if resenha %}Editar resenha{% else %}Nova resenha{% endif %}{% endblock %}
+{% block titulo_formulario %}{% if resenha %}Editar resenha{% else %}Nova resenha{% endif %}{% endblock %}
+{% block subtitulo %}Sobre {{ livro.titulo }}, de {{ livro.autor }}.{% endblock %}
+
+{% block explicacao %}
+  <a class="livro-resumo" href="{{ livro.get_absolute_url }}">
+    {% include "partials/capa.html" with livro=livro tamanho="media" %}
+  </a>
+  <p>A resenha aparece na página do livro com o seu nome. Você pode editar ou excluir quando quiser em <a href="{% url 'livros:minhas_resenhas' %}">Minhas resenhas</a>.</p>
+{% endblock %}
+
+{% block campos %}
+  <fieldset class="campo campo--notas{% if form.nota.errors %} campo--erro{% endif %}">
+    <legend>Nota</legend>
+    <div class="notas">
+      {% for opcao in form.nota %}
+      <label class="nota-opcao">
+        {{ opcao.tag }}
+        <span class="nota-opcao__numero num">{{ opcao.data.value }}</span>
+        <span class="nota-opcao__rotulo">{{ opcao.choice_label }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    {% for erro in form.nota.errors %}<p class="campo__erro">{{ erro }}</p>{% endfor %}
+  </fieldset>
+  {% include "partials/campo.html" with campo=form.titulo %}
+  {% include "partials/campo.html" with campo=form.texto %}
+{% endblock %}
+
+{% block acoes %}
+  <button class="botao botao--primario" type="submit">{% if resenha %}Salvar alterações{% else %}Publicar resenha{% endif %}</button>
+  <a class="botao" href="{{ livro.get_absolute_url }}">Cancelar</a>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% comment %}
+Segundo nível da herança: base.html → layouts/formulario.html → página.
+Todas as telas de formulário (entrar, criar conta, livro, resenha) têm o mesmo desenho:
+título no topo, uma coluna de explicação à esquerda e o formulário em um painel à direita.
+As páginas filhas preenchem os blocos titulo_formulario, subtitulo, explicacao e campos.
+{% endcomment %}
+
+{% block conteudo %}
+<div class="titulo-linha">
+  <div>
+    <h1>{% block titulo_formulario %}{% endblock %}</h1>
+    <p class="subtitulo">{% block subtitulo %}{% endblock %}</p>
+  </div>
+</div>
+
+<div class="formulario-layout">
+  <div class="formulario-layout__explicacao">
+    {% block explicacao %}{% endblock %}
+  </div>
+
+  <form class="painel formulario" method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="aviso aviso--error" role="alert">
+        {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% block campos %}
+      {% for campo in form.visible_fields %}
+        {% include "partials/campo.html" %}
+      {% endfor %}
+    {% endblock %}
+
+    <div class="formulario__acoes">
+      {% block acoes %}{% endblock %}
+    </div>
+  </form>
+</div>
+{% endblock %}
