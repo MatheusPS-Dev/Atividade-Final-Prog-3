@@ -1,9 +1,3 @@
-"""Rotas do projeto.
-
-- /admin/            parte administrativa do Django
-- /contas/...        entrar, sair e criar conta
-- todo o resto       app "livros" (livros/urls.py)
-"""
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path

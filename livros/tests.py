@@ -19,8 +19,6 @@ class BaseTeste(TestCase):
 
 
 class PaginasPublicasTeste(BaseTeste):
-    """Quem não está logado consegue navegar e ler."""
-
     def test_inicio_lista_e_detalhe_abrem_sem_login(self):
         for url in [reverse('livros:inicio'), reverse('livros:lista'), reverse('livros:detalhe', args=[self.livro.pk])]:
             with self.subTest(url=url):
@@ -39,12 +37,10 @@ class PaginasPublicasTeste(BaseTeste):
     def test_detalhe_mostra_media_das_notas(self):
         Resenha.objects.create(livro=self.livro, usuario=self.bruno, nota=5, titulo='Ótimo', texto='Muito bom.')
         resposta = self.client.get(reverse('livros:detalhe', args=[self.livro.pk]))
-        self.assertContains(resposta, '4,5')  # (4 + 5) / 2, com vírgula por causa do pt-br
+        self.assertContains(resposta, '4,5')
 
 
 class AcoesRestritasTeste(BaseTeste):
-    """Item 3 do enunciado: quem não está logado não pode fazer certas ações."""
-
     def test_visitante_e_mandado_para_o_login(self):
         urls = [
             reverse('livros:novo_livro'),
@@ -99,8 +95,6 @@ class AcoesRestritasTeste(BaseTeste):
 
 
 class CadastroTeste(TestCase):
-    """Item 2 do enunciado: o usuário consegue se inscrever no site."""
-
     def test_cadastro_cria_usuario_e_ja_entra_logado(self):
         resposta = self.client.post(reverse('cadastro'), {
             'first_name': 'Carla', 'username': 'carla', 'email': 'carla@example.com',

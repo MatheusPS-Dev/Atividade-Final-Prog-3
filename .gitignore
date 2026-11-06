@@ -13,10 +13,8 @@ db.sqlite3-journal
 # Arquivos estáticos gerados pelo "collectstatic"
 staticfiles/
 
-# Variáveis de ambiente e configurações locais
+# Variáveis de ambiente e IDEs
 .env
-.claude/
 .vscode/
-
-# Arquivos de trabalho da revisão visual
-.taste-skill/
+.claude/
+.idea/

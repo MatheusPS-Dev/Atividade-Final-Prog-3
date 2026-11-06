@@ -6,9 +6,6 @@ from django.urls import reverse
 
 
 class Genero(models.Model):
-    """Categoria literária (ex.: Ficção científica). Um gênero tem vários livros."""
-
-    # Cada tom corresponde a uma classe CSS (.tom-azul, .tom-verde...) em static/css/estilo.css
     TONS = [
         ('azul', 'Azul'),
         ('verde', 'Verde'),
@@ -42,13 +39,11 @@ class Genero(models.Model):
 
 
 class Livro(models.Model):
-    """Um livro do acervo. Pertence a um Gênero e foi cadastrado por um User."""
-
     titulo = models.CharField('título', max_length=200)
     autor = models.CharField('autor(a)', max_length=150)
     genero = models.ForeignKey(
         Genero,
-        on_delete=models.PROTECT,  # não deixa apagar um gênero que ainda tem livros
+        on_delete=models.PROTECT,
         related_name='livros',
         verbose_name='gênero',
     )
@@ -56,7 +51,7 @@ class Livro(models.Model):
     sinopse = models.TextField('sinopse', blank=True)
     cadastrado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,  # se o usuário for apagado, o livro continua no acervo
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='livros_cadastrados',
@@ -76,13 +71,10 @@ class Livro(models.Model):
         return reverse('livros:detalhe', args=[self.pk])
 
     def media_notas(self):
-        """Média das notas das resenhas, ou None se ainda não houver resenhas."""
         return self.resenhas.aggregate(media=Avg('nota'))['media']
 
 
 class Resenha(models.Model):
-    """Opinião de um User sobre um Livro, com nota de 1 a 5."""
-
     NOTAS = [
         (1, 'Não gostei'),
         (2, 'Fraco'),
@@ -93,12 +85,12 @@ class Resenha(models.Model):
 
     livro = models.ForeignKey(
         Livro,
-        on_delete=models.CASCADE,  # apagar o livro apaga as resenhas dele
+        on_delete=models.CASCADE,
         related_name='resenhas',
         verbose_name='livro',
     )
     usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,  # o User model do Django
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='resenhas',
         verbose_name='usuário',
@@ -118,7 +110,6 @@ class Resenha(models.Model):
         verbose_name_plural = 'resenhas'
         ordering = ['-criado_em']
         constraints = [
-            # cada usuário escreve no máximo uma resenha por livro
             models.UniqueConstraint(fields=['livro', 'usuario'], name='uma_resenha_por_usuario_e_livro'),
         ]
 

@@ -17,7 +17,6 @@
 {% with rota=request.resolver_match.url_name %}
 <div class="app">
 
-  {# Barra do celular: aparece só em telas estreitas e abre o menu lateral #}
   <header class="barra-celular">
     <a class="marca marca--compacta" href="{% url 'livros:inicio' %}">
       {% include "partials/marca.html" %}

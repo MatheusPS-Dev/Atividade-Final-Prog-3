@@ -1,4 +1,3 @@
-{% comment %}Um campo de formulário: rótulo acima, ajuda e erros ligados ao campo.{% endcomment %}
 <div class="campo{% if campo.errors %} campo--erro{% endif %}">
   <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
   {{ campo }}

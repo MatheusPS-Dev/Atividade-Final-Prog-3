@@ -8,8 +8,6 @@ from .models import Livro, Resenha
 
 
 class CadastroForm(UserCreationForm):
-    """Formulário de inscrição no site: o UserCreationForm do Django com nome e e-mail."""
-
     first_name = forms.CharField(label='Seu nome', max_length=150)
     email = forms.EmailField(label='E-mail')
 
@@ -46,5 +44,4 @@ class ResenhaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # tira a opção vazia "---------" que o Django coloca nos campos com choices
         self.fields['nota'].choices = Resenha.NOTAS

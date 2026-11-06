@@ -19,8 +19,6 @@ class GeneroAdmin(admin.ModelAdmin):
 
 
 class ResenhaInline(admin.TabularInline):
-    """Mostra as resenhas dentro da página de edição do livro."""
-
     model = Resenha
     extra = 0
     fields = ['usuario', 'nota', 'titulo']
@@ -29,7 +27,6 @@ class ResenhaInline(admin.TabularInline):
     show_change_link = True
 
     def has_add_permission(self, request, obj=None):
-        # resenhas novas são escritas pelos usuários no site, não por aqui
         return False
 
 

@@ -1,4 +1,4 @@
-// Abre e fecha o menu lateral no celular/tablet.
+// Menu responsivo
 const botaoMenu = document.querySelector('.botao--menu');
 const menu = document.getElementById('menu-lateral');
 
@@ -16,8 +16,7 @@ if (botaoMenu && menu) {
   });
 }
 
-// Selects marcados com data-autoenvio enviam o formulário assim que mudam
-// (ex.: "Ordenar por" na lista de livros). Sem JavaScript, aparece o botão "Aplicar".
+// Submissão automática em campos de filtro/ordenação
 document.querySelectorAll('[data-autoenvio]').forEach((campo) => {
   campo.addEventListener('change', () => campo.form.submit());
 });

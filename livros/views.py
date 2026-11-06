@@ -11,22 +11,16 @@ from .models import Genero, Livro, Resenha
 
 
 def livros_com_notas():
-    """Livros já com a média das notas e o número de resenhas calculados pelo banco."""
     return Livro.objects.select_related('genero').annotate(
         media=Avg('resenhas__nota'),
         total_resenhas=Count('resenhas'),
     )
 
 
-# ---------------------------------------------------------------------------
-# Páginas públicas: qualquer visitante pode ver
-# ---------------------------------------------------------------------------
-
-MINIMO_RESENHAS_RANKING = 2  # uma única nota 5 não basta para liderar o ranking
+MINIMO_RESENHAS_RANKING = 2
 
 
 def inicio(request):
-    # ranking: melhor média entre os livros com pelo menos 2 resenhas
     ranking = (
         livros_com_notas()
         .filter(total_resenhas__gte=MINIMO_RESENHAS_RANKING)
@@ -35,7 +29,7 @@ def inicio(request):
     contexto = {
         'resenhas_recentes': Resenha.objects.select_related('livro__genero', 'usuario')[:4],
         'mais_bem_avaliados': ranking,
-        'destaque': ranking[0] if ranking else None,  # a frase do topo usa o 1º do ranking
+        'destaque': ranking[0] if ranking else None,
         'minimo_ranking': MINIMO_RESENHAS_RANKING,
         'novos_livros': Livro.objects.select_related('genero').order_by('-criado_em', '-pk')[:6],
         'generos': Genero.objects.annotate(total_livros=Count('livros')),
@@ -87,8 +81,6 @@ def detalhe_livro(request, pk):
     livro = get_object_or_404(livros_com_notas().select_related('cadastrado_por'), pk=pk)
     resenhas = livro.resenhas.select_related('usuario')
 
-    # quantas resenhas deram cada nota (5 até 1), para o gráfico de barras
-    # (order_by() vazio tira a ordenação padrão, que atrapalharia o agrupamento)
     contagem = dict(
         livro.resenhas.order_by().values('nota').annotate(total=Count('id')).values_list('nota', 'total')
     )
@@ -116,7 +108,6 @@ def detalhe_livro(request, pk):
 
 
 def cadastro(request):
-    """Inscrição de um novo usuário. Depois de criar a conta, ele já entra logado."""
     if request.user.is_authenticated:
         return redirect('livros:inicio')
 
@@ -131,11 +122,6 @@ def cadastro(request):
         form = CadastroForm()
     return render(request, 'registration/cadastro.html', {'form': form})
 
-
-# ---------------------------------------------------------------------------
-# Ações restritas: só para quem está logado (@login_required)
-# Quem não está logado é mandado para a tela de login (settings.LOGIN_URL).
-# ---------------------------------------------------------------------------
 
 @login_required
 def novo_livro(request):
@@ -177,7 +163,6 @@ def nova_resenha(request, pk):
 
 @login_required
 def editar_resenha(request, pk):
-    # filtrar por usuario=request.user garante que ninguém edita a resenha de outra pessoa
     resenha = get_object_or_404(Resenha.objects.select_related('livro__genero'), pk=pk, usuario=request.user)
 
     if request.method == 'POST':

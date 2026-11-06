@@ -1,11 +1,4 @@
-"""Comando: python manage.py popular_dados
-
-Preenche o banco com DADOS DE EXEMPLO (gêneros, livros, leitores e resenhas) para o site
-não começar vazio na apresentação. Pode ser executado mais de uma vez sem duplicar nada.
-
-Os leitores de exemplo são criados SEM senha utilizável: ninguém consegue entrar com eles.
-Para testar o login, crie sua própria conta pelo site ou com "createsuperuser".
-"""
+"""Carga inicial de dados para desenvolvimento e testes."""
 from datetime import timedelta
 
 from django.contrib.auth.models import User

@@ -1,8 +1,4 @@
-/* ==========================================================================
-   Entre Páginas — folha de estilo
-   Estilo: fundo cinza-claro, painéis brancos de cantos grandes (20px) e
-   cada gênero com um tom pastel próprio (fundo claro + tinta escura do mesmo tom).
-   ========================================================================== */
+/* Entre Páginas — Estilos Principais */
 
 :root {
   --ground: #f3f5f7;
